@@ -12,6 +12,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     @IBOutlet var tableView: UITableView!
     
+    let redditURL: NSURL = NSURL(string: "https://www.reddit.com/r/gaming/.json")!
+    let data = NSData(contentsOfURL: NSURL(string: "https://www.reddit.com/r/gaming/.json")!)!
+    
+    var names = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,7 +45,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     
-
+    func loadData() {
+        do {
+            let json = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+    
+                if let posts = json["data"]["children"]["data"] as? [[String: AnyObject]] {
+                    for post in posts {
+                        if let name = post["name"] as? String {
+                            names.append(name)
+                        }
+                    }
+                }
+            } catch {
+                print("error serializing JSON: \(error)")
+            }
+                print(names) // ["Bloxus test", "Manila Test"]
+    }
 
 }
 
